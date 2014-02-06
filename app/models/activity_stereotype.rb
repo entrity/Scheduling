@@ -21,8 +21,7 @@ protected
   # models of this stereotype, but it would pay off if there were much indexing of models to be
   # done, and the project requirements sugested a vendor name field on the +Activity+ model.
   def denormalize_vendor_name
-    # raise RuntimeError, "not implemented yet"
-    # self.vendor_name = vendor.try(:name) if vendor_id_changed?
+    self.vendor_name = vendor.try(:name) if vendor_id_changed?
   end
 
 end

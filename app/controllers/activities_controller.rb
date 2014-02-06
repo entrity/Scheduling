@@ -6,14 +6,18 @@ class ActivitiesController < ApplicationController
     raise 'todo'
   end
 
+  # For recurring activity, <tt>params[:activity]</tt> should contain 
+  # nested attributes for associated +ActivityFactory+.
   def create
     @activity = Activity.create activity_params
-    respond_with @activity
+    status = @activity.new_record? ? 400 : 201
+    respond_with @activity, status:status
   end
 
   def update
     @activity = Activity.find params[:id]
     respond_with @activity.update_attributes activity_params
+    respond_with @activity
   end
 
   def destroy
@@ -32,9 +36,9 @@ private
 
   def activity_params
     params.require(:activity).permit([
-      :name, :description, :start, :finish, :bookings_available, :price,
-      {activity_factory:[ :name, :descript, :start_date, :start_time, :finish_date, :finish_time, :price ]}
-      ])
+      *(Activity.columns.map(&:name) - %w[id activity_factory_id created_at updated_at deleted]),
+      :recurrence => (ActivityFactory.columns.map(&:name) - %w[id created_at updated_at deleted])
+    ])
   end
   
 end

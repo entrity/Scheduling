@@ -7,6 +7,14 @@ class ActivityFactory < ActiveRecord::Base
 
   include ActivityStereotype
 
+  has_many :activities
+
+  validates :name, presence:true, allow_nil:false
+  validates :start_date, presence:true, allow_nil:false
+  validates :start_time, presence:true, allow_nil:false
+  validates :duration, presence:true, allow_nil:false
+  validate  :require_recurrence_constraints
+
   # Override +destroy+ to prevent records from actually being deleted
   def destroy
     update_attributes! deleted:true
@@ -34,6 +42,14 @@ class ActivityFactory < ActiveRecord::Base
       else
         self.days_of_week &= ~(1<<bit)
       end
+    end
+  end
+
+private
+
+  def require_recurrence_constraints
+    unless days_of_week.try(:>, 0) || days_of_month.try(:>, 0)
+      errors.add :base, "Must supply days_of_week or days_of_month"
     end
   end
 

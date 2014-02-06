@@ -15,7 +15,6 @@ class CreateActivityFactories < ActiveRecord::Migration
       t.integer :days_of_week   # bitwise value for days of week when recurrence falls
       t.integer :days_of_month  # bitwise value for days of month when recurrence falls
       t.integer :months_of_year # bitwise value for months of year when recurrence falls
-      t.integer :weeks_of_month # bitwise value for weeks of month when recurrence falls
 
       t.integer :bookings_available, default:0
       t.decimal :price, precision:6, scale:2, default:0

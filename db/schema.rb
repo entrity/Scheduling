@@ -40,7 +40,6 @@ ActiveRecord::Schema.define(version: 20140205030007) do
     t.integer  "days_of_week"
     t.integer  "days_of_month"
     t.integer  "months_of_year"
-    t.integer  "weeks_of_month"
     t.integer  "bookings_available",                         default: 0
     t.decimal  "price",              precision: 6, scale: 2, default: 0.0
     t.boolean  "deleted",                                    default: false
