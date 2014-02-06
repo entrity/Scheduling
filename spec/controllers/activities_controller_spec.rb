@@ -4,10 +4,12 @@ describe ActivitiesController do
 
   describe '#index' do
     it 'returns 200' do
-      pending
+      get :index, format:'json'
+      response.status.should == 200
     end
     it 'renders valid JSON' do
-      pending
+      get :index, format:'json'
+      expect{ JSON.parse response.body }.to_not raise_error
     end
   end
 

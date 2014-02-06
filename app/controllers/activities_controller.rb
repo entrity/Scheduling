@@ -2,8 +2,15 @@ class ActivitiesController < ApplicationController
 
   respond_to :json
 
+  # Optionally supply +:start+ and +:finish+ to limit the times of 
+  # events scoped. +:start+ defaults to the current time.
+  # Optionally supply +:limit+ to specify the maximum number of records
+  # returned. This defaults to 50.
   def index
-    raise 'todo'
+    @activities = Activity.where(["start >= ?", params[:start] || Time.now])
+    @activities.merge Activity.where(["finish <= ?", params[:finish]]) if params[:finish]
+    @activities.merge Activity.limit(params[:limit] || 50)
+    respond_with @activities
   end
 
   # For recurring activity, <tt>params[:activity]</tt> should contain 
