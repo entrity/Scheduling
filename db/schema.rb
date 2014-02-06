@@ -17,6 +17,8 @@ ActiveRecord::Schema.define(version: 20140205030007) do
     t.integer  "activity_factory_id"
     t.string   "name"
     t.text     "description"
+    t.integer  "vendor_id"
+    t.string   "vendor_name"
     t.datetime "start"
     t.datetime "finish"
     t.integer  "bookings_available",                          default: 0
@@ -29,10 +31,12 @@ ActiveRecord::Schema.define(version: 20140205030007) do
   create_table "activity_factories", force: true do |t|
     t.string   "name"
     t.text     "description"
+    t.integer  "vendor_id"
+    t.string   "vendor_name"
     t.date     "start_date"
-    t.date     "finish_date"
     t.time     "start_time"
-    t.time     "finish_time"
+    t.integer  "duration"
+    t.date     "end_date"
     t.integer  "days_of_week"
     t.integer  "days_of_month"
     t.integer  "months_of_year"

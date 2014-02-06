@@ -1,8 +1,6 @@
-Tue, 04 Feb 2014 19:32:19 -0800
-app/models/activity_factory.rb	Tue, 04 Feb 2014 19:32:16 -0800
-app/models/activity.rb	Tue, 04 Feb 2014 18:44:44 -0800
+Wed, 05 Feb 2014 18:59:02 -0800
+app/models/activity_factory.rb	Wed, 05 Feb 2014 18:05:36 -0800
+app/models/activity.rb	Wed, 05 Feb 2014 18:06:13 -0800
+app/models/activity_stereotype.rb	Wed, 05 Feb 2014 18:48:05 -0800
 app/controllers/application_controller.rb	Tue, 04 Feb 2014 17:45:59 -0800
-app/assets/javascripts/application.js	Tue, 04 Feb 2014 17:45:59 -0800
-app/assets/stylesheets/application.css	Tue, 04 Feb 2014 17:45:59 -0800
-app/helpers/application_helper.rb	Tue, 04 Feb 2014 17:45:59 -0800
-app/views/layouts/application.html.erb	Tue, 04 Feb 2014 17:45:59 -0800
+app/controllers/activities_controller.rb	Tue, 04 Feb 2014 21:13:08 -0800

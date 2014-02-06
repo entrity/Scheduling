@@ -5,12 +5,12 @@
 # Most of the fields on this model concern recurrence of activities.
 class ActivityFactory < ActiveRecord::Base
 
+  include ActivityStereotype
+
   # Override +destroy+ to prevent records from actually being deleted
   def destroy
     update_attributes! deleted:true
   end
-
-private
 
   # == Pseudo Accessors/Mutators ==
   # The following code sets up convenience functions for the facility of anyone learning the API.

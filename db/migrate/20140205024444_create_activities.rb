@@ -5,6 +5,8 @@ class CreateActivities < ActiveRecord::Migration
 
       t.string :name
       t.text :description
+      t.references :vendor
+      t.string :vendor_name
 
       t.datetime :start
       t.datetime :finish

@@ -3,19 +3,6 @@ require 'spec_helper'
 describe ActivityFactory do
   let(:af){ ActivityFactory.new days_of_week:0 }
 
-  describe '#destroy' do
-    it 'sets .deleted' do
-      af.save
-      af.deleted.should == false
-      af.destroy
-      af.deleted.should == true
-    end
-    it 'does not remove the record' do
-      af.save
-      expect{af.destroy}.to_not change(ActivityFactory, :count)
-    end
-  end
-
   describe '#sunday' do
     it 'returns truthy value corresponding to bit 0 of days_of_week' do
       af.sunday.should == false

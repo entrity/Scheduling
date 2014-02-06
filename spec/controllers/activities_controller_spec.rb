@@ -2,7 +2,22 @@ require 'spec_helper'
 
 describe ActivitiesController do
 
+  describe '#index' do
+    it 'returns 200' do
+      pending
+    end
+    it 'renders valid JSON' do
+      pending
+    end
+  end
+
   describe '#create' do
+    it 'returns 204' do
+      pending
+    end
+    it 'creates a record' do
+      pending
+    end
   end
 
   describe '#destroy' do

@@ -65,9 +65,30 @@
   
 </div>
 
+    <div id="includes-section" class="nav-section">
+  <h3>Included Modules</h3>
+
+  <ul class="link-list">
+  
+  
+    <li><a class="include" href="ActivityStereotype.html">ActivityStereotype</a>
+  
+  
+  </ul>
+</div>
+
     
+    <!-- Method Quickref -->
+<div id="method-list-section" class="nav-section">
+  <h3>Methods</h3>
+
+  <ul class="link-list" role="directory">
     
+    <li ><a href="#method-i-destroy">#destroy</a>
     
+  </ul>
+</div>
+
   </div>
 </nav>
 
@@ -78,33 +99,12 @@
 
   <section class="description">
     
-<p>This is a model for</p>
-<ul><li>
-<p>test</p>
-</li><li>
-<p>bar</p>
-</li></ul>
+<p>This is a model for building recurring activities. It creates
+<code>Activity</code> instances. <code>Activity</code> creation is
+performed when an instance of this model is created and when  the schedule
+of the <strong>whenever</strong> gem dictates that it should be run.</p>
 
-<p><code>goo</code></p>
-<dl class="rdoc-list note-list"><dt>abe
-<dd>
-<p>fre</p>
-</dd><dt>wer
-<dd>
-<p>uiouoip u iuop uip</p>
-</dd></dl>
-
-<p><em>foo</em> <strong>fda</strong> <code>crop</code> <code>tetsl</code></p>
-<dl class="rdoc-list label-list"><dt><code>fda</code>
-<dd>
-<p>ffdsa</p>
-</dd><dt><code>fda</code>
-<dd>
-<p>ffdsa</p>
-</dd><dt><code>fda</code>
-<dd>
-<p>ffdsa</p>
-</dd></dl>
+<p>Most of the fields on this model concern recurrence of activities.</p>
 
   </section>
 
@@ -121,6 +121,48 @@
     
 
     
+     <section id="public-instance-5Buntitled-5D-method-details" class="method-section">
+       <header>
+         <h3>Public Instance Methods</h3>
+       </header>
+
+    
+      <div id="method-i-destroy" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">destroy</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Override <code>destroy</code> to prevent records from actually being
+deleted</p>
+          
+          
+
+          
+          <div class="method-source-code" id="destroy-source">
+            <pre><span class="ruby-comment"># File app/models/activity_factory.rb, line 11</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">destroy</span>
+  <span class="ruby-identifier">update_attributes!</span> <span class="ruby-identifier">deleted</span><span class="ruby-value">:true</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+    </section>
+  
   </section>
 </main>
 

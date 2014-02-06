@@ -4,11 +4,13 @@ class CreateActivityFactories < ActiveRecord::Migration
 
       t.string :name
       t.text :description
+      t.references :vendor
+      t.string :vendor_name
 
       t.date :start_date
-      t.date :finish_date
       t.time :start_time
-      t.time :finish_time
+      t.integer :duration # in seconds
+      t.date :end_date
 
       t.integer :days_of_week   # bitwise value for days of week when recurrence falls
       t.integer :days_of_month  # bitwise value for days of month when recurrence falls
