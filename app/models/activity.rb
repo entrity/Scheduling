@@ -19,6 +19,8 @@ class Activity < ActiveRecord::Base
 
 private
 
+  # +before_create+ callback. It create an +ActivityFactory+ if a
+  # +recurrence+ Hash has been set on this instance.
   def create_activity_factory_wrapper
     if recurrence
       create_activity_factory({
@@ -29,9 +31,8 @@ private
         vendor_name:vendor_name,
         bookings_available:bookings_available,
         price:price,
+        start: start,
         # Fields inferred from +Activity+ model
-        start_date: start.try(:to_date),
-        start_time: start.try(:to_time),
         duration: (start && finish && finish - start)
       }.merge(recurrence) )
       return !activity_factory.new_record?

@@ -7,8 +7,7 @@ class CreateActivityFactories < ActiveRecord::Migration
       t.references :vendor
       t.string :vendor_name
 
-      t.date :start_date
-      t.time :start_time
+      t.datetime :start
       t.integer :duration # in seconds
       t.date :end_date
 

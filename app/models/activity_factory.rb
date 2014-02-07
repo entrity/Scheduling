@@ -10,14 +10,32 @@ class ActivityFactory < ActiveRecord::Base
   has_many :activities
 
   validates :name, presence:true, allow_nil:false
-  validates :start_date, presence:true, allow_nil:false
-  validates :start_time, presence:true, allow_nil:false
+  validates :start, presence:true, allow_nil:false
   validates :duration, presence:true, allow_nil:false
   validate  :require_recurrence_constraints
+
+  after_create :schedule_activities
 
   # Override +destroy+ to prevent records from actually being deleted
   def destroy
     update_attributes! deleted:true
+  end
+
+  # Creates +Activity+ instances until +end_date+ or <tt>1.year.from_now</tt>
+  # Fires as a callback +after_create+
+  # - Schedules on a weekly basis if <tt>days_of_week > 0</tt>
+  # - Else, schedules on a month basis if <tt>days_of_month > 0</tt>
+  # - Else, raises error
+  def schedule_activities
+    # Calc time of first activity and last activity within scheduling range (max 1 yr)
+    today = Date.today
+    dt = DateTime.new today.year, today.month, today.day, start.hour, start.min, start.sec
+    schedule_finish = self.end_date || 1.year.from_now
+    # Loop for one year
+    while dt <= schedule_finish
+      find_or_create_activity(dt) if meets_constraints?(dt)
+      dt += 1.days
+    end
   end
 
   # == Pseudo Accessors/Mutators ==
@@ -46,7 +64,6 @@ class ActivityFactory < ActiveRecord::Base
         self.days_of_week &= ~(1<<bit)
       end
     end
-
   end
 
   # Define number-based convenience functions for days_of_week, days_of_month, and months_of_year
@@ -79,11 +96,61 @@ class ActivityFactory < ActiveRecord::Base
         self[field] = value
       end
     end
-
   end
 
 private
 
+  # Returns true if given bit == 1 on +num+
+  def bit_set? num, bit
+    (num >> bit) % 2 == 1
+  end
+
+  # Returns true if +bitmask+ is nil or 0, which are considered wildcards.
+  # Otherwise, returns true if the bit is set.
+  def constraint_match? bitmask, bit
+    bitmask.nil? || bitmask == 0 || bit_set?(bitmask, bit)
+  end
+
+  # Returns a DateTime for the given date falling between +schedule_start+
+  # and +schedule_finish+.
+  # Returns nil if Date is invalid or does not fall within range.
+  def build_dt_in_range yr, mo, day, time
+    if Date::valid_civil?(yr, mo, day)
+      dt = DateTime.new(yr, mo, day, time.hour, time.min, time.sec) and
+      return dt if dt >= schedule_start and dt <= schedule_finish
+    end
+  end
+
+  # Find or create an activity whose +activity_factory_id+ matches this instance
+  # and whose +start+ matches the argument +start_datetime+
+  def find_or_create_activity(start_datetime)
+    Activity.find_or_create_by({
+      # Fields copied straight from +ActivityFactory+ model
+      name:name,
+      description:description,
+      vendor_id:vendor_id,
+      vendor_name:vendor_name,
+      bookings_available:bookings_available,
+      price:price,
+      # Fields inferred from +ActivityFactory+ model
+      activity_factory_id:self.id,
+      start: start_datetime,
+      finish: start_datetime + duration.seconds,
+    })
+  end
+
+  def meets_constraints? datetime
+    # months of year
+    return false unless constraint_match? months_of_year, datetime.month
+    # days of month
+    return false unless constraint_match? days_of_month, datetime.day
+    # days of week
+    return false unless constraint_match? days_of_week, datetime.wday
+    # ...constraints passed
+    true
+  end
+
+  # Validation method
   def require_recurrence_constraints
     unless days_of_week.try(:>, 0) || days_of_month.try(:>, 0)
       errors.add :base, "Must supply days_of_week or days_of_month"

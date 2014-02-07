@@ -105,7 +105,44 @@ describe ActivityFactory do
         af.days_of_month_array.should == [1,3,5,7,19]
       end
     end
+  end
 
+  describe '#schedule_activities' do
+    let(:start)     { DateTime.new 1999, 3, 31, 9, 0, 0 }
+    let(:end_date)  { Date.new 2000, 1, 3 }
+    let(:duration)  { 3.hours }
+    let(:days_of_week)    { 0b1001100 }
+    let(:days_of_month)   { 0b11000100 }
+    let(:months_of_year)  { 0b10000100010 }
+    let(:af){ FactoryGirl::create :activity_factory, id:14, days_of_week:days_of_week, days_of_month:days_of_month, months_of_year:months_of_year, name:'LAN Party', description:'Party hard',vendor_name:'Linus Torvalds', start:start, end_date:end_date}
+
+    before do
+      Timecop.freeze(Date.new 1999, 2, 15)
+    end
+
+    context 'when :days_of_week present' do
+
+    end
+    context 'when :days_of_week absent but :days_of_month present' do
+      let(:days_of_week){ nil }
+      it 'makes expected records' do
+        af.schedule_activities
+        Activity.all.map{|a| a.start.utc }.should == [
+          Time.utc(1999, 5, 2, 9, 0, 0), # may 2 2000
+          Time.utc(1999, 5, 6, 9, 0, 0), # may 6 1999
+          Time.utc(1999, 5, 7, 9, 0, 0), # may 7 1999
+          Time.utc(1999, 10, 2, 9, 0, 0), # oct 2 1999
+          Time.utc(1999, 10, 6, 9, 0, 0), # oct 6 1999
+          Time.utc(1999, 10, 7, 9, 0, 0), # oct 7 1999
+          Time.utc(2000, 1, 2, 9, 0, 0), # jan 2 2000
+        ]
+      end
+    end
+    context 'when :days_of_week and :days_of_month absent' do
+      it 'should not create any Activities' do
+        pending
+      end
+    end
   end
 
 end
