@@ -29,12 +29,15 @@ class ActivityFactory < ActiveRecord::Base
   # - +sunday=+
   # ...which can be used to get/set bits on the field +days_of_week+.
 
+  # Define name-based convenience functions for days_of_week
   [:sunday, :monday, :tuesday, :wednesday, :thursday, :friday, :saturday].each_with_index do |name, bit|
+
     # Define getter, which returns boolean if recurrence is set for given day of week
     define_method name do
       self.days_of_week ||= 0
       (self.days_of_week & (1<<bit)) != 0
     end
+
     # Define setter
     define_method "#{name}=" do |value|
       if value
@@ -43,6 +46,40 @@ class ActivityFactory < ActiveRecord::Base
         self.days_of_week &= ~(1<<bit)
       end
     end
+
+  end
+
+  # Define number-based convenience functions for days_of_week, days_of_month, and months_of_year
+  [:days_of_week, :days_of_month, :months_of_year].each do |field|
+
+    # Define getter, which returns an +Array+ of +Fixnum+
+    define_method "#{field}_array" do
+      bits = []
+      bitmask = self[field]
+      i = 0
+      while bitmask > 0
+        # last digit is 1 if bitmask is odd
+        bits.push(i) if (bitmask % 2) > 0
+        # bitshift bitmask
+        bitmask = bitmask >> 1
+        # increment i
+        i += 1
+      end
+      bits
+    end
+
+    # Define setter, which behaves as normal unless the arg is an +Array+
+    define_method "#{field}=" do |value|
+      if value.is_a? Array
+        # Set bits for all Fixnum in +value+ array
+        self[field] = 0
+        value.each{|bit| self[field] |= (1<<bit) }
+      else
+        # Default behaviour: write bitmask
+        self[field] = value
+      end
+    end
+
   end
 
 private

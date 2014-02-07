@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe ActivityFactory do
-  let(:af){ ActivityFactory.new days_of_week:0 }
+  let(:af){ ActivityFactory.new days_of_week:0, days_of_month:1, months_of_year:0 }
 
   describe '#sunday' do
     it 'returns truthy value corresponding to bit 0 of days_of_week' do
@@ -75,6 +75,37 @@ describe ActivityFactory do
       af.friday.should == false
       af.sunday.should == false
     end
+  end
+
+  describe 'number-based convencience function:' do
+    let(:af){ ActivityFactory.new days_of_week:1, days_of_month:0, months_of_year:0 }
+
+    describe '#days_of_month=' do
+      context 'when given a Fixnum' do
+        it 'sets field value to arg value' do
+          af.days_of_month.should == 0
+          af.days_of_month = 155
+          af.days_of_month.should == 155
+        end
+      end
+      context 'when given an Array of Fixnum' do
+        it 'sets field bits from arg values' do
+          af.days_of_month.should == 0
+          af.days_of_month = [1,5,3,7,19]
+          af.days_of_month.should == 0b10000000000010101010
+        end
+      end
+    end
+
+    describe '#days_of_month_array' do
+      it 'returns array with numbers for bits set on :days_of_month' do
+        af.days_of_month_array.should be_a Array
+        af.days_of_month_array.should be_empty
+        af.days_of_month = 0b10000000000010101010
+        af.days_of_month_array.should == [1,3,5,7,19]
+      end
+    end
+
   end
 
 end
