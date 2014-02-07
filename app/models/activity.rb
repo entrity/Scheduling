@@ -10,16 +10,16 @@ class Activity < ActiveRecord::Base
   validates :start, presence:true, allow_nil:false
   validates :finish, presence:true, allow_nil:false
 
-  # Field for building an +ActivityFactory+, referenced in callback +create_factory+
+  # Field for building an +ActivityFactory+, referenced in callback +create_activity_factory_wrapper+
   attr_accessor :recurrence
 
   accepts_nested_attributes_for :activity_factory
 
-  before_create :create_factory
+  before_create :create_activity_factory_wrapper
 
 private
 
-  def create_factory
+  def create_activity_factory_wrapper
     if recurrence
       create_activity_factory({
         # Fields copied straight from +Activity+ model

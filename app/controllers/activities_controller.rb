@@ -8,8 +8,8 @@ class ActivitiesController < ApplicationController
   # returned. This defaults to 50.
   def index
     @activities = Activity.where(["start >= ?", params[:start] || Time.now])
-    @activities.merge Activity.where(["finish <= ?", params[:finish]]) if params[:finish]
-    @activities.merge Activity.limit(params[:limit] || 50)
+    @activities = @activities.merge Activity.where(["finish <= ?", params[:finish]]) if params[:finish]
+    @activities = @activities.merge Activity.limit(params[:limit] || 50)
     respond_with @activities
   end
 

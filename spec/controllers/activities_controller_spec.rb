@@ -11,6 +11,43 @@ describe ActivitiesController do
       get :index, format:'json'
       expect{ JSON.parse response.body }.to_not raise_error
     end
+    context 'with data in db' do
+      before do
+        FactoryGirl::create :activity, start:1.days.ago, finish:(1.days.ago+2.hours)
+        FactoryGirl::create :activity, start:1.days.from_now
+        FactoryGirl::create :activity, start:3.days.from_now
+        FactoryGirl::create :activity, start:5.days.from_now
+        FactoryGirl::create :activity, start:7.days.from_now
+      end
+      it 'outputs items which fall within range, when no params specified' do 
+        get :index, format:'json'
+        activities = JSON.parse response.body
+        activities.length.should == 4
+        activities.all?{|a| a['start'] >= Time.now || a['finish'] <= Time.now }.should == true
+      end
+      it 'omits items which have started but not finished in given range' do
+        start = (1.days.ago + 1.hours)
+        get :index, format:'json', start:start
+        activities = JSON.parse response.body
+        activities.length.should == 4
+        activities.all?{|a| a['start'] >= start || a['finish'] <= start }.should == true
+      end
+      it 'includes past items if indicated' do
+        start = (1.days.ago - 1.hours)
+        get :index, format:'json', start:start
+        activities = JSON.parse response.body
+        activities.length.should == 5
+        activities.all?{|a| a['start'] >= start || a['finish'] <= start }.should == true
+      end
+      it 'omits items that fall after params[:finish]' do
+        start = 2.days.ago
+        finish = 2.days.from_now
+        get :index, format:'json', start:start, finish:finish
+        activities = JSON.parse response.body
+        activities.length.should == 2
+        activities.all?{|a| a['start'] >= start || a['finish'] <= start }.should == true
+      end
+    end
   end
 
   describe '#create' do
@@ -32,6 +69,10 @@ describe ActivitiesController do
 
     context 'without params for recurrence' do
       it_behaves_like '#create'
+
+      it 'does not create ActivityFactory record' do
+        expect{ post :create, params }.to change(ActivityFactory, :count).by(0)
+      end
     end
     
     context 'with params for recurrence' do
