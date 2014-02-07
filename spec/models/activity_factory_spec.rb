@@ -114,20 +114,26 @@ describe ActivityFactory do
     let(:days_of_week)    { 0b1001100 }
     let(:days_of_month)   { 0b11000100 }
     let(:months_of_year)  { 0b10000100010 }
-    let(:af){ FactoryGirl::create :activity_factory, id:14, days_of_week:days_of_week, days_of_month:days_of_month, months_of_year:months_of_year, name:'LAN Party', description:'Party hard',vendor_name:'Linus Torvalds', start:start, end_date:end_date}
+    let(:af){ FactoryGirl::build :activity_factory, id:14, days_of_week:days_of_week, days_of_month:days_of_month, months_of_year:months_of_year, name:'LAN Party', description:'Party hard',vendor_name:'Linus Torvalds', start:start, end_date:end_date}
 
     before do
       Timecop.freeze(Date.new 1999, 2, 15)
     end
 
-    context 'when :days_of_week present' do
-
+    context 'when :days_of_week present but :days_of_month absent' do
+      let(:days_of_month){ nil }
+      it 'makes expected records' do
+        expect{ af.schedule_activities }.to change(Activity, :count).by(27)
+        activities = Activity.where(activity_factory_id:14)
+        activities.all?{|a| a.start.tuesday? || a.start.wednesday? || a.start.saturday? }.should == true
+        activities.all?{|a| [1,5,10].include? a.start.month }.should == true
+      end
     end
     context 'when :days_of_week absent but :days_of_month present' do
       let(:days_of_week){ nil }
       it 'makes expected records' do
         af.schedule_activities
-        Activity.all.map{|a| a.start.utc }.should == [
+        Activity.where(activity_factory_id:14).map{|a| a.start.utc }.should == [
           Time.utc(1999, 5, 2, 9, 0, 0), # may 2 2000
           Time.utc(1999, 5, 6, 9, 0, 0), # may 6 1999
           Time.utc(1999, 5, 7, 9, 0, 0), # may 7 1999
@@ -139,8 +145,10 @@ describe ActivityFactory do
       end
     end
     context 'when :days_of_week and :days_of_month absent' do
+      let(:days_of_week){ nil }
+      let(:days_of_month){ nil }
       it 'should not create any Activities' do
-        pending
+        expect{ af.schedule_activities }.to raise_error
       end
     end
   end

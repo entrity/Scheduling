@@ -27,6 +27,7 @@ class ActivityFactory < ActiveRecord::Base
   # - Else, schedules on a month basis if <tt>days_of_month > 0</tt>
   # - Else, raises error
   def schedule_activities
+    raise StandardError, errors.full_messages unless valid?
     # Calc time of first activity and last activity within scheduling range (max 1 yr)
     today = Date.today
     dt = DateTime.new today.year, today.month, today.day, start.hour, start.min, start.sec
