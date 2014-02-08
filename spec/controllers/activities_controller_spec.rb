@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe ActivitiesController do
+  let(:activity) { FactoryGirl.create :activity, bookings_available:5 }  
 
   describe '#index' do
     it 'returns 200' do
@@ -130,9 +131,7 @@ describe ActivitiesController do
     end
   end
 
-  describe '#add_booking' do
-    let(:activity) { FactoryGirl.create :activity, bookings_available:5 }
-   
+  describe '#add_booking' do   
     it 'decrements bookings_available on Activity' do
       post :add_booking, {format:'json', name:'Clarence Clemmons', id:activity.id}
       activity.reload.bookings_available.should == 4
@@ -141,6 +140,19 @@ describe ActivitiesController do
       expect{
         post :add_booking, {format:'json', name:'Clarence Clemmons', id:activity.id}
       }.to change(Booking, :count).by(1)
+    end
+  end
+
+  describe '#update' do
+    let(:params) { { format:'json', id:activity.id, activity:{name:'colourless green ideas sleep furiously'} } }
+    it 'does not create a record' do
+      activity.save
+      expect{put :update, params }.to_not change(Activity, :count)
+    end
+    it 'changes name (when given name param)' do
+      activity.name.should_not == 'colourless green ideas sleep furiously' 
+      put :update, params
+      activity.reload.name.should == 'colourless green ideas sleep furiously' 
     end
   end
 
