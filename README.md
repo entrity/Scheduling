@@ -39,7 +39,7 @@ The destroy action does not destroy any records in the database; rather, it sets
 
 ### add_booking
 
-An activity_id and a name (of the person booking a slot on the Activity) are required in the params. This decrements the bookings available on the Activity (via a callback on Booking).
+An Activity id and a name (of the person booking a slot on the Activity) are required in the params. This create a Booking record and decrements the bookings available on the Activity (via a callback on Booking).
 
 ### Recurring activities
 
@@ -60,13 +60,13 @@ It is admitted that this degree of configurability of recurrence omits some usef
 - Data model for activities -- no need to go crazy, it can be really simple and just have an Activity name and a Vendor name (e.g. activity = “surf lesson” and vendor = “Joe the Surf Instructor”)
   - There are two models in the application at this point: Activity and ActivityFactory. Activity represents a single instance of an event/activity. ActifityFactory represents a series of events (i.e. a recurring event); it is used to build Activity records. There is room for a Vendor model, and there are tentative plans for User and associated models.
 - Ability to add and remove activity availability
-  - This can be accomplished with the activities#update action or the activities#destroy action, changing either the 'deleted' or 'bookings_available' field on an Activity.
+  - This can be accomplished with the activities#add_booking action, described above. For more control (i.e. change availability without creating a Booking), use the activities#update action or the activities#destroy action, changing either the 'deleted' or 'bookings_available' field on an Activity.
 - API ability to check activity day availability over a range (e.g. what days are available between 10/10/13 and 11/10/13?)
   - This is accomplished with the activities#index action. See above for details.
 - API ability to check activity availability within a day (e.g. what times are available on 10/15/13?)
   - This is accomplished with the activities#index action. See above for details. (Specify a 'finish' param.)
 - API ability to create bookings against activities with availability (= reduce remaining availability)
-  - This can be accomplished with the activities#update action, changing the 'bookings_available' field on an Activity.
+  - This can be accomplished with the activities#add_booking action, described above.
 - Automated tests hitting the API for all the different cases
   - See the text under the 'Testing' header above.
 
