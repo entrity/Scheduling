@@ -4,7 +4,7 @@ This application should work right out of the box. It uses sqlite for its databa
 
 ## Testing
 
-Testing is accomplished withRSpec. The 'test' directory can be disregarded in favour of the 'spec' directory. After raking <tt>db:test:prepare</tt>, run the rspec tests with rake or with the rspec executable.
+Testing is accomplished with RSpec. The 'test' directory can be disregarded in favour of the 'spec' directory. After raking <tt>db:test:prepare</tt>, run the rspec tests with rake or with the rspec executable.
 
 ## Rdoc
 
