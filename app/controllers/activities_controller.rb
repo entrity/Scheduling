@@ -7,7 +7,8 @@ class ActivitiesController < ApplicationController
   # Optionally supply +:limit+ to specify the maximum number of records
   # returned. This defaults to 50.
   def index
-    @activities = Activity.where(["start >= ?", params[:start] || Time.now])
+    @activities = Activity.where('deleted IS NULL OR deleted != 1')
+    @activities = @activities.merge Activity.where(["start >= ?", params[:start] || Time.now])
     @activities = @activities.merge Activity.where(["finish <= ?", params[:finish]]) if params[:finish]
     @activities = @activities.merge Activity.limit(params[:limit] || 50)
     respond_with @activities
