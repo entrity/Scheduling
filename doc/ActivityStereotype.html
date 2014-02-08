@@ -220,8 +220,7 @@ model.</p>
           <div class="method-source-code" id="denormalize_vendor_name-source">
             <pre><span class="ruby-comment"># File app/models/activity_stereotype.rb, line 23</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">denormalize_vendor_name</span>
-  <span class="ruby-comment"># raise RuntimeError, &quot;not implemented yet&quot;</span>
-  <span class="ruby-comment"># self.vendor_name = vendor.try(:name) if vendor_id_changed?</span>
+  <span class="ruby-keyword">self</span>.<span class="ruby-identifier">vendor_name</span> = <span class="ruby-identifier">vendor</span>.<span class="ruby-identifier">try</span>(<span class="ruby-value">:name</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">vendor_id_changed?</span>
 <span class="ruby-keyword">end</span></pre>
           </div>
           

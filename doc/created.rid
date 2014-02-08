@@ -1,6 +1,6 @@
-Wed, 05 Feb 2014 18:59:02 -0800
-app/models/activity_factory.rb	Wed, 05 Feb 2014 18:05:36 -0800
-app/models/activity.rb	Wed, 05 Feb 2014 18:06:13 -0800
-app/models/activity_stereotype.rb	Wed, 05 Feb 2014 18:48:05 -0800
+Fri, 07 Feb 2014 17:44:45 -0800
 app/controllers/application_controller.rb	Tue, 04 Feb 2014 17:45:59 -0800
-app/controllers/activities_controller.rb	Tue, 04 Feb 2014 21:13:08 -0800
+app/controllers/activities_controller.rb	Fri, 07 Feb 2014 15:03:09 -0800
+app/models/activity_factory.rb	Fri, 07 Feb 2014 14:58:13 -0800
+app/models/activity.rb	Fri, 07 Feb 2014 13:55:56 -0800
+app/models/activity_stereotype.rb	Wed, 05 Feb 2014 19:50:16 -0800

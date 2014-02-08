@@ -86,6 +86,8 @@
     
     <li ><a href="#method-i-destroy">#destroy</a>
     
+    <li ><a href="#method-i-schedule_activities">#schedule_activities</a>
+    
   </ul>
 </div>
 
@@ -147,9 +149,59 @@ deleted</p>
 
           
           <div class="method-source-code" id="destroy-source">
-            <pre><span class="ruby-comment"># File app/models/activity_factory.rb, line 11</span>
+            <pre><span class="ruby-comment"># File app/models/activity_factory.rb, line 20</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">destroy</span>
   <span class="ruby-identifier">update_attributes!</span> <span class="ruby-identifier">deleted</span><span class="ruby-value">:true</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-schedule_activities" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">schedule_activities</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Creates <code>Activity</code> instances until <code>end_date</code> or
+<code>1.year.from_now</code> Fires as a callback <code>after_create</code></p>
+<ul><li>
+<p>Schedules on a weekly basis if <code>days_of_week &gt; 0</code></p>
+</li><li>
+<p>Else, schedules on a month basis if <code>days_of_month &gt; 0</code></p>
+</li><li>
+<p>Else, raises error</p>
+</li></ul>
+          
+          
+
+          
+          <div class="method-source-code" id="schedule_activities-source">
+            <pre><span class="ruby-comment"># File app/models/activity_factory.rb, line 29</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">schedule_activities</span>
+  <span class="ruby-identifier">raise</span> <span class="ruby-constant">StandardError</span>, <span class="ruby-identifier">errors</span>.<span class="ruby-identifier">full_messages</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">valid?</span>
+  <span class="ruby-comment"># Calc time of first activity and last activity within scheduling range (max 1 yr)</span>
+  <span class="ruby-identifier">today</span> = <span class="ruby-constant">Date</span>.<span class="ruby-identifier">today</span>
+  <span class="ruby-identifier">dt</span> = <span class="ruby-constant">DateTime</span>.<span class="ruby-identifier">new</span> <span class="ruby-identifier">today</span>.<span class="ruby-identifier">year</span>, <span class="ruby-identifier">today</span>.<span class="ruby-identifier">month</span>, <span class="ruby-identifier">today</span>.<span class="ruby-identifier">day</span>, <span class="ruby-identifier">start</span>.<span class="ruby-identifier">hour</span>, <span class="ruby-identifier">start</span>.<span class="ruby-identifier">min</span>, <span class="ruby-identifier">start</span>.<span class="ruby-identifier">sec</span>
+  <span class="ruby-identifier">schedule_finish</span> = <span class="ruby-keyword">self</span>.<span class="ruby-identifier">end_date</span> <span class="ruby-operator">||</span> <span class="ruby-value">1</span>.<span class="ruby-identifier">year</span>.<span class="ruby-identifier">from_now</span>
+  <span class="ruby-comment"># Loop for one year</span>
+  <span class="ruby-keyword">while</span> <span class="ruby-identifier">dt</span> <span class="ruby-operator">&lt;=</span> <span class="ruby-identifier">schedule_finish</span>
+    <span class="ruby-identifier">find_or_create_activity</span>(<span class="ruby-identifier">dt</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">meets_constraints?</span>(<span class="ruby-identifier">dt</span>)
+    <span class="ruby-identifier">dt</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span>.<span class="ruby-identifier">days</span>
+  <span class="ruby-keyword">end</span>
 <span class="ruby-keyword">end</span></pre>
           </div>
           
