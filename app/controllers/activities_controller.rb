@@ -46,8 +46,12 @@ class ActivitiesController < ApplicationController
 
   def add_booking
     @activity = Activity.find params[:id]
-    @booking = @activity.bookings.create name:params[:name]
-    render json: @booking.as_json
+    if @activity.bookings_available.try :>, 0
+      @booking = @activity.bookings.create name:params[:name]
+      render json: @booking.as_json, status:201
+    else
+      render json:{error:'no bookings available'}, status:418
+    end
   end
 
 private

@@ -1,7 +1,8 @@
 require 'spec_helper'
 
 describe ActivitiesController do
-  let(:activity) { FactoryGirl.create :activity, bookings_available:5 }  
+  let(:bookings_available){ 5 }
+  let(:activity) { FactoryGirl.create :activity, bookings_available:bookings_available }
 
   describe '#index' do
     it 'returns 200' do
@@ -131,15 +132,36 @@ describe ActivitiesController do
     end
   end
 
-  describe '#add_booking' do   
-    it 'decrements bookings_available on Activity' do
-      post :add_booking, {format:'json', name:'Clarence Clemmons', id:activity.id}
-      activity.reload.bookings_available.should == 4
+  describe '#add_booking' do
+    let(:params){ {format:'json', name:'Clarence Clemmons', id:activity.id} }
+
+    context 'when bookings are available' do
+      it 'decrements bookings_available on Activity' do
+        post :add_booking, params
+        activity.reload.bookings_available.should == 4
+      end
+      it 'creates a Booking record' do
+        expect{ post :add_booking, params }.to change(Booking, :count).by(1)
+      end
+      it 'returns 201' do
+        post :add_booking, params
+        response.status.should == 201
+      end
     end
-    it 'creates a Booking record' do
-      expect{
-        post :add_booking, {format:'json', name:'Clarence Clemmons', id:activity.id}
-      }.to change(Booking, :count).by(1)
+    context 'when bookings are NOT available' do
+      let(:bookings_available){ 0 }
+
+      it 'creates no booking record' do
+        expect{ post :add_booking, params }.to_not change(Booking, :count)
+      end
+      it 'does NOT decrement bookings_available on Activity' do
+        post :add_booking, params
+        activity.reload.bookings_available.should == 0
+      end
+      it 'returns 418' do
+        post :add_booking, params
+        response.status.should == 418
+      end
     end
   end
 
