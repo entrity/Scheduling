@@ -37,6 +37,10 @@ A quick look at the schema.rb file and the 'activity_params' private function in
 
 The destroy action does not destroy any records in the database; rather, it sets a 'deleted' flag, which prevents the given record from being scoped in the index action.
 
+### add_booking
+
+An activity_id and a name (of the person booking a slot on the Activity) are required in the params. This decrements the bookings available on the Activity (via a callback on Booking).
+
 ### Recurring activities
 
 When a recurring activity is created (i.e. when an Activity with a valid 'recurrence' attribute is created, thereby creating a ActivityFactory), Activity records are created for each instance of that recurring activity (up to one year in the future or the end date of the recurrence, whichever falls first) in order to facilitate querying over date ranges and customizing particular instances.

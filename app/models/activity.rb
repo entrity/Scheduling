@@ -5,6 +5,7 @@ class Activity < ActiveRecord::Base
   # If this is a recurring activity, it belongs to an +ActivityFactory+.
   # This leaves room for updating all linked +Activity+ records in future development.
   belongs_to :activity_factory
+  has_many :bookings
 
   validates :name, presence:true, allow_nil:false
   validates :start, presence:true, allow_nil:false

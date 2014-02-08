@@ -130,4 +130,18 @@ describe ActivitiesController do
     end
   end
 
+  describe '#add_booking' do
+    let(:activity) { FactoryGirl.create :activity, bookings_available:5 }
+   
+    it 'decrements bookings_available on Activity' do
+      post :add_booking, {format:'json', name:'Clarence Clemmons', id:activity.id}
+      activity.reload.bookings_available.should == 4
+    end
+    it 'creates a Booking record' do
+      expect{
+        post :add_booking, {format:'json', name:'Clarence Clemmons', id:activity.id}
+      }.to change(Booking, :count).by(1)
+    end
+  end
+
 end

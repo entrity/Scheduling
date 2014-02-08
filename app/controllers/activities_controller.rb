@@ -28,7 +28,7 @@ class ActivitiesController < ApplicationController
 
   def update
     @activity = Activity.find params[:id]
-    respond_with @activity.update_attributes activity_params
+    @activity.update_attributes activity_params
     respond_with @activity
   end
 
@@ -42,6 +42,12 @@ class ActivitiesController < ApplicationController
   def show
     @activity = Activity.find params[:id]
     respond_with @activity
+  end
+
+  def add_booking
+    @activity = Activity.find params[:id]
+    @booking = @activity.bookings.create name:params[:name]
+    render json: @booking.as_json
   end
 
 private
