@@ -59,7 +59,7 @@ describe ActivitiesController do
         response.status.should == 201
       end
       it 'creates a record' do
-        expect{ post :create, params }.to change(Activity, :count).by(1)
+        expect{ post :create, params }.to change(Activity, :count).by( activities_ct )
       end
       it 'returns valid JSON' do
         post :create, params
@@ -68,22 +68,40 @@ describe ActivitiesController do
     end
 
     context 'without params for recurrence' do
+      let(:activities_ct){ 1 }
+
       it_behaves_like '#create'
 
       it 'does not create ActivityFactory record' do
         expect{ post :create, params }.to change(ActivityFactory, :count).by(0)
       end
+
+      it 'renders JSON Hash' do
+        post :create, params
+        output = JSON.parse response.body
+        output.should be_a Hash
+      end
     end
     
     context 'with params for recurrence' do
+      let(:activities_ct){ 7 }
+
       before do
-        params[:activity][:recurrence] = {days_of_week:7, days_of_month:14, months_of_year:6, end_date:5.months.from_now}
+        Timecop.freeze(Date.new 2014, 1, 1)
+        params[:activity][:recurrence] = {days_of_month:14, months_of_year:6, end_date:5.months.from_now}
       end
 
       it_behaves_like '#create'
 
       it 'creates ActivityFactory record' do
         expect{ post :create, params }.to change(ActivityFactory, :count).by(1)
+      end
+
+      it 'renders JSON array of 7 activities' do
+        post :create, params
+        output = JSON.parse response.body
+        output.should be_a Array
+        output.length.should == 7
       end
 
       it 'fails' do

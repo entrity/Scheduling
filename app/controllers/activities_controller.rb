@@ -19,7 +19,11 @@ class ActivitiesController < ApplicationController
   def create
     @activity = Activity.create activity_params
     status = @activity.new_record? ? 400 : 201
-    respond_with @activity, status:status
+    if @activity.recurrence
+      render json: @activity.activity_factory.activities.as_json, status:status
+    else
+      respond_with @activity, status:status
+    end
   end
 
   def update

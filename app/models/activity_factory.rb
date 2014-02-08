@@ -30,8 +30,8 @@ class ActivityFactory < ActiveRecord::Base
     raise StandardError, errors.full_messages unless valid?
     # Calc time of first activity and last activity within scheduling range (max 1 yr)
     today = Date.today
-    dt = DateTime.new today.year, today.month, today.day, start.hour, start.min, start.sec
     schedule_finish = self.end_date || 1.year.from_now
+    dt = DateTime.new today.year, today.month, today.day, start.hour, start.min, start.sec
     # Loop for one year
     while dt <= schedule_finish
       find_or_create_activity(dt) if meets_constraints?(dt)
